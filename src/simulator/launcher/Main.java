@@ -15,7 +15,6 @@ import simulator.model.Body;
 import simulator.model.ForceLaws;
 
 public class Main {
-
 	// default values for some parameters
 	//
 	private final static Double _dtimeDefaultValue = 2500.0;

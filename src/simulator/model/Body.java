@@ -38,40 +38,39 @@ public class Body {
         return mass;
     }
 
-    public void addForce(Vector2D f){
-
+    protected void addForce(Vector2D f){
+        force.plus(f);
     }
 
-    public void resetForce(){
+    protected void resetForce(){
         force = new Vector2D();
     }
 
-    public void move(double t){
+    protected void move(double t){
        Vector2D a;
-        if(getMass()==0){
+        if(mass==0){
             a=new Vector2D();
         }
         else{
-            a=new Vector2D(getForce().scale(1/getMass()));
-            getPosition().plus(getVelocity().scale(t).plus(a.scale(0.5)));
-            getVelocity().plus(a.scale(t));
+            a=new Vector2D(force.scale(1/mass));
+            position.plus(velocity.scale(t).plus(a.scale(0.5)));
+            velocity.plus(a.scale(t));
         }
 
     }
 
     public JSONObject getState(){
-
-        JSONObject jsonObject = getState().getJSONObject("id: " + getId()+"\n"+
-                "vel: "+getVelocity().toString()+"\n"
-                +"pos: " +getPosition().toString()
-                +"force: "+getForce().toString()+"\n"
-                +"mass: "+getMass());
-
-        return jsonObject;
+        return new JSONObject()
+                .put("id", id)
+                .put("m",mass)
+                .put("p",position.toString())
+                .put("v",velocity.toString())
+                .put("f",force.toString());
 
     }
 
     public String toString(){
         return getState().toString();
     }
+
 }

@@ -3,9 +3,19 @@ import java.util.List;
 
 public class NoForce implements ForceLaws{
 
+    public NoForce(){
+
+    }
     @Override
     public void apply(List<Body> bs){
 
-    }
+        return;
 
+    }
+    @Override
+    public String toString(){
+        return "ng";
+    }
 }
+
+

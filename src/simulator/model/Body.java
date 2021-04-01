@@ -1,6 +1,9 @@
 package simulator.model;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import simulator.misc.Vector2D;
+
+import java.util.Objects;
 
 public class Body {
     protected String id;
@@ -9,11 +12,11 @@ public class Body {
     protected Vector2D position;
     protected double mass;
 
-    public Body(String id, Vector2D velocity, Vector2D force, Vector2D position,
+    public Body(String id, Vector2D velocity, Vector2D position,
                 double mass){
         this.id=id;
         this.velocity=velocity;
-        this.force=force;
+        this.force=new Vector2D();
         this.position=position;
         this.mass=mass;
     }
@@ -38,23 +41,23 @@ public class Body {
         return mass;
     }
 
-    protected void addForce(Vector2D f){
+     void addForce(Vector2D f){
         force.plus(f);
     }
 
-    protected void resetForce(){
+     void resetForce(){
         force = new Vector2D();
     }
 
-    protected void move(double t){
+     void move(double t){
        Vector2D a;
         if(mass==0){
             a=new Vector2D();
         }
         else{
-            a=new Vector2D(force.scale(1/mass));
-            position.plus(velocity.scale(t).plus(a.scale(0.5)));
-            velocity.plus(a.scale(t));
+            a=force.scale(1/mass);
+            position=position.plus(velocity.scale(t).plus(a.scale(0.5).scale(t*t)));
+            velocity=velocity.plus(a.scale(t));
         }
 
     }
@@ -63,12 +66,25 @@ public class Body {
         return new JSONObject()
                 .put("id", id)
                 .put("m",mass)
-                .put("p",position.toString())
-                .put("v",velocity.toString())
-                .put("f",force.toString());
-
+                .put("p",new JSONArray().put(position.getX()).put(position.getY()))
+                .put("v",new JSONArray().put(velocity.getX()).put(velocity.getY()))
+                .put("f",new JSONArray().put(force.getX()).put(force.getY()));
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Body body = (Body) o;
+        return Objects.equals(id, body.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
     public String toString(){
         return getState().toString();
     }
